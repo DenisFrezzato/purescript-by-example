@@ -6,17 +6,17 @@ import Control.Plus (empty)
 import Data.List (List(..), filter, head)
 import Data.Maybe (Maybe)
 
-type Address =
-  { street :: String
-  , city   :: String
-  , state  :: String
-  }
+type Entry = {
+  firstName :: String,
+  lastName :: String,
+  address :: Address
+}
 
-type Entry =
-  { firstName :: String
-  , lastName  :: String
-  , address   :: Address
-  }
+type Address = {
+  street :: String,
+  city :: String,
+  state :: String
+}
 
 type AddressBook = List Entry
 
@@ -35,5 +35,5 @@ insertEntry = Cons
 findEntry :: String -> String -> AddressBook -> Maybe Entry
 findEntry firstName lastName = head <<< filter filterEntry
   where
-  filterEntry :: Entry -> Boolean
-  filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
+    filterEntry :: Entry -> Boolean
+    filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
