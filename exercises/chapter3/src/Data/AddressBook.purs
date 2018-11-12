@@ -3,7 +3,7 @@ module Data.AddressBook where
 import Prelude
 
 import Control.Plus (empty)
-import Data.List (List(..), filter, head)
+import Data.List (List(..), filter, head, nubBy, null)
 import Data.Maybe (Maybe)
 
 type Entry = {
@@ -37,3 +37,21 @@ findEntry firstName lastName = head <<< filter filterEntry
   where
     filterEntry :: Entry -> Boolean
     filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
+
+findEntryByAddress :: String -> AddressBook -> Maybe Entry
+findEntryByAddress street = head <<< filter filterEntry
+  where
+    filterEntry :: Entry -> Boolean
+    filterEntry entry = entry.address.street == street
+
+isInAddressBook :: String -> String -> AddressBook -> Boolean
+isInAddressBook firstName lastName = not null <<< filter filterEntry
+  where
+    filterEntry :: Entry -> Boolean
+    filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
+
+removeDuplicates :: AddressBook -> AddressBook
+removeDuplicates = nubBy areEquals
+  where
+    areEquals :: Entry -> Entry -> Boolean
+    areEquals entry1 entry2 = entry1.firstName == entry2.firstName && entry1.lastName == entry2.lastName
