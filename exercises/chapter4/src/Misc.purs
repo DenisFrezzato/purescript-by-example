@@ -2,9 +2,11 @@ module Misc where
 
 import Prelude
 
-import Data.Array (filter, (..), length)
-import Data.Foldable (product)
 import Control.MonadZero (guard)
+import Data.Array (filter, (..), length)
+import Data.Array.Partial (head, tail)
+import Partial.Unsafe (unsafePartial)
+import Data.Foldable (product, foldl)
 
 sqr :: Array Int -> Array Int
 sqr a = (\n -> n * n) <$> a
@@ -41,3 +43,18 @@ triples n = do
   c <- b .. n
   guard $ a * a + b * b == c * c
   pure [a, b, c]
+
+reverse :: forall a. Array a -> Array a
+reverse = foldl (\xs x -> [x] <> xs) []
+
+allTrue :: Array Boolean -> Boolean
+allTrue = foldl (\xs x -> xs && x) true
+
+count :: forall a. (a -> Boolean) -> Array a -> Int
+count = count' 0
+  where
+    count' :: Int -> (a -> Boolean) -> Array a -> Int
+    count' acc p [] = acc
+    count' acc p xs = if p (unsafePartial head xs)
+      then count' (acc + 1) p (unsafePartial tail xs)
+      else count' acc p (unsafePartial tail xs)
