@@ -139,3 +139,7 @@ area :: Shape -> Number
 area (Circle _ r) = Math.pi * r * r
 area (Rectangle _ width height) = width * height
 area _ = 0.0
+
+instance showShapeC :: Show Shape where
+  show :: Shape -> String
+  show s = showShape s
