@@ -5,6 +5,7 @@ import Prelude
 import Data.Foldable (foldl)
 import Global as Global
 import Math as Math
+import Data.Maybe (Maybe(..))
 
 data Point = Point
   { x :: Number
@@ -114,3 +115,17 @@ bounds = foldl combine emptyBounds
   where
   combine :: Bounds -> Shape -> Bounds
   combine b shape = union (shapeBounds shape) b
+
+circle' :: Shape
+circle' = Circle (Point { x: 0.0, y: 0.0 }) 10.0
+
+origin :: Point
+origin = Point { x: 0.0, y: 0.0 }
+
+doubleShape :: Shape -> Shape
+doubleShape (Circle center radius) = Circle origin (radius * 2.0)
+doubleShape s = s
+
+getText :: Shape -> Maybe String
+getText (Text _ text) = Just text
+getText _ = Nothing
