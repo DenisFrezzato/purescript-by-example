@@ -21,6 +21,7 @@ data Shape
   | Rectangle Point Number Number
   | Line Point Point
   | Text Point String
+  | Clipped Picture Shape
 
 showShape :: Shape -> String
 showShape (Circle c r) =
@@ -31,6 +32,8 @@ showShape (Line start end) =
   "Line [start: " <> showPoint start <> ", end: " <> showPoint end <> "]"
 showShape (Text loc text) =
   "Text [location: " <> showPoint loc <> ", text: " <> show text <> "]"
+showShape (Clipped picture shape) =
+  "Clipped [shape: " <> showShape shape <> "]"
 
 type Picture = Array Shape
 
@@ -77,6 +80,8 @@ shapeBounds (Text (Point { x, y }) _) = Bounds
   , bottom: y
   , right:  x
   }
+shapeBounds (Clipped picture rectangle) =
+  foldl (\boundsAcc shape -> union boundsAcc (shapeBounds shape)) (shapeBounds rectangle) picture
 
 union :: Bounds -> Bounds -> Bounds
 union (Bounds b1) (Bounds b2) = Bounds
@@ -129,3 +134,8 @@ doubleShape s = s
 getText :: Shape -> Maybe String
 getText (Text _ text) = Just text
 getText _ = Nothing
+
+area :: Shape -> Number
+area (Circle _ r) = Math.pi * r * r
+area (Rectangle _ width height) = width * height
+area _ = 0.0
